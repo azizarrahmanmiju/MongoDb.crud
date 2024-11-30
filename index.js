@@ -13,7 +13,6 @@ app.use(express.json());  //
 
 const uri = "mongodb+srv://azizarrahman01032003:MKAr9ci87DBiIaRK@cluster0.yzj1q.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -22,22 +21,35 @@ const client = new MongoClient(uri, {
     }
 });
 
+const db = client.db("Users_Database");
+const dbcol = db.collection("Users");
+const getcoll = db.col
+
 async function run() {
     try {
-
         await client.connect();
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
     } finally {
-        await client.close();
+        // await client.close();
     }
 }
 run().catch(console.dir);
 
 //===mongo db end
+app.post('/users', async (req, res) => {
+    const user = req.body;
+    console.log(user)
+    const result = await dbcol.insertOne(user);
+    console.log(result, result.insertedIds)
+    res.send(result,);
+});
+
+
 
 app.get('/', (req, res) => {
-    res.send('GET request to the homepage');
+    res.send('Server Is running');
 })
 
 app.listen(port, () => {
