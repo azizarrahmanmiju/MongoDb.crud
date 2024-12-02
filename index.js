@@ -84,9 +84,21 @@ app.delete('/users/:id', async (req, res) => {
     } catch (err) {
         res.status(500).send('Internal Server Error');
     }
-
-
 });
+
+app.put('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    const { name } = req.body;
+    const query = { _id: new ObjectId(id) };
+    const updateDoc = { $set: { name: name } };
+    const result = await dbcol.updateOne(query, updateDoc);
+    if (result.modifiedCount > 0) {
+        res.send("User updated" + name);
+    } else {
+        res.send("User not found");
+    }
+
+})
 
 
 
